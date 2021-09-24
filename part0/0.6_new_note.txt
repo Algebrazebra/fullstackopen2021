@@ -1,0 +1,7 @@
+note over browser
+User submits note.
+DOM is updated locally to include note.
+end note
+
+browser->server: HTTP POST studies.cs.helsinki.fi/exampleapp/new_note_spa
+server --> browser: Response with code 201 indicating the note creation was successful
