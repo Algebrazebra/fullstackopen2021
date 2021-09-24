@@ -1,0 +1,16 @@
+browser->server: HTTP GET studies.cs.helsinki.fi/exampleapp/spa
+server --> browser: Response with code 200 and spa.html
+
+browser -> server: HTTP GET studies.cs.helsinki.fi/exampleapp/main.css
+server --> browser: Response with code 200 and main.css
+
+browser -> server: HTTP GET studies.cs.helsinki.fi/exampleapp/spa.js
+server --> browser: Response with code 200 and spa.js
+
+note over browser
+Browser executes spa.js.
+Line 31 initiates the next request.
+end note
+
+browser -> server: HTTP GET studies.cs.helsinki.fi/exampleapp/data.json
+server --> browser: Response with code 200 and data.json
