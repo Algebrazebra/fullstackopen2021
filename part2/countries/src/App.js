@@ -12,7 +12,7 @@ const CountryDetail = ({ country }) => {
     <div>
       <h2>{country.name.common}</h2>
       <div>
-        capital {country.capital}
+        capital {country.capital}<br />
         population {country.population}
       </div>
       <h3>languages</h3>
@@ -26,7 +26,16 @@ const CountryDetail = ({ country }) => {
   )
 }
 
-const CountryResults = ({ allCountries, searchTerm }) => {
+const CountryResultItem = ({ country, onClickHandler }) => {
+  return (
+    <div>
+      {country.name.common}
+      <button onClick={() => onClickHandler(country.name.common)}>show</button>
+    </div>
+  )
+}
+
+const CountryResults = ({ allCountries, searchTerm, onClickHandler}) => {
   const filteredCountries = allCountries.filter(
     x => x.name.common.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -37,7 +46,7 @@ const CountryResults = ({ allCountries, searchTerm }) => {
     return <CountryDetail country={filteredCountries[0]}/>
   }
   else if (filteredCountries.length < 10) {
-    return filteredCountries.map(c => <div key={c.ccn3}>{c.name.common}</div>)
+    return filteredCountries.map(c => <CountryResultItem key={c.ccn3} country={c} onClickHandler={onClickHandler}/>)
   }
   else {
     return <div>Too many matches, specify another filter</div>
@@ -63,7 +72,7 @@ const App = () => {
   return (
     <>
     <CountrySearch searchEventHandler={searchEventHandler} />
-    <CountryResults allCountries={countries} searchTerm={searchTerm} />
+    <CountryResults allCountries={countries} searchTerm={searchTerm} onClickHandler={setSearchTerm}/>
     </>
   )
 }
