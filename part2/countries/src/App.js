@@ -7,7 +7,7 @@ const CountrySearch = ({ searchEventHandler}) => (
   </div>
 )
 
-const CountryDetail = ({ country }) => {
+const CountryDetail = ({ country, weather, setWeather}) => {
   return (
     <div>
       <h2>{country.name.common}</h2>
@@ -22,6 +22,7 @@ const CountryDetail = ({ country }) => {
         </ul>
       </div>
       <img src={country.flags.png} alt={`Flag of ${country.name.common}`} />
+      <Weather city={country.capital} weather={weather} setWeather={setWeather} />
     </div>
   )
 }
@@ -35,7 +36,32 @@ const CountryResultItem = ({ country, onClickHandler }) => {
   )
 }
 
-const CountryResults = ({ allCountries, searchTerm, onClickHandler}) => {
+const Weather = ({city, weather, setWeather}) => {
+  const api_key = process.env.REACT_APP_API_KEY
+  useEffect(() => {
+    axios
+      .get(`http://api.weatherstack.com/current?access_key=${api_key}&query=${city}`)
+      .then(response => {
+        console.log(response.data)
+        const res = response.data.current
+        setWeather({
+          temperature: res.temperature,
+          wind: `${res.wind_speed} mph direction ${res.wind_dir}`,
+          icon: res.weather_icons[0]
+        })
+      })
+  }, [api_key, city, setWeather])
+  return (
+    <div>
+      <h3>Weather in {city}</h3>
+      <b>temperature:</b> {weather.temperature}<br />
+      <img src={weather.icon} alt={`Weather in ${city}`} /><br />
+      <b>wind:</b> {weather.wind}
+    </div>
+  )
+}
+
+const CountryResults = ({allCountries, searchTerm, onClickHandler, weather, setWeather}) => {
   const filteredCountries = allCountries.filter(
     x => x.name.common.toLowerCase().includes(searchTerm.toLowerCase())
   )
@@ -43,7 +69,7 @@ const CountryResults = ({ allCountries, searchTerm, onClickHandler}) => {
     return ''
   }
   else if (filteredCountries.length === 1) {
-    return <CountryDetail country={filteredCountries[0]}/>
+    return <CountryDetail country={filteredCountries[0]} weather={weather} setWeather={setWeather} />
   }
   else if (filteredCountries.length < 10) {
     return filteredCountries.map(c => <CountryResultItem key={c.ccn3} country={c} onClickHandler={onClickHandler}/>)
@@ -56,6 +82,7 @@ const CountryResults = ({ allCountries, searchTerm, onClickHandler}) => {
 const App = () => {
   const [countries, setCountries] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
+  const [weather, setWeather] = useState({})
 
   useEffect(() => {
     axios
@@ -72,7 +99,13 @@ const App = () => {
   return (
     <>
     <CountrySearch searchEventHandler={searchEventHandler} />
-    <CountryResults allCountries={countries} searchTerm={searchTerm} onClickHandler={setSearchTerm}/>
+    <CountryResults 
+      allCountries={countries}
+      searchTerm={searchTerm}
+      onClickHandler={setSearchTerm}
+      weather={weather}
+      setWeather={setWeather}
+    />
     </>
   )
 }
