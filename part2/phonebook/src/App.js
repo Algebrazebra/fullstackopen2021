@@ -2,6 +2,28 @@ import React, { useState, useEffect } from 'react'
 import personsService from './services/persons'
 
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+
+  const notifStyle = {
+    color: 'red',
+    background: 'lightgrey',
+    fontSize: '20px',
+    borderStyle: 'solid',
+    borderRadius: '5px',
+    padding: '10px',
+    marginBottom: '10px'
+  }
+
+  return (
+    <div style={notifStyle}>
+      {message}
+    </div>
+  )
+}
+
 const Filter = ({eventHandler}) => (
   <div>
   filter shown with <input onChange={eventHandler}/>
@@ -41,6 +63,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newNameFilter, setNewNameFilter ] = useState('')
+  const [ message, setMessage ] = useState(null)
 
   useEffect(() => {
     personsService
@@ -66,7 +89,13 @@ const App = () => {
           setPersons(updatedPersons)
           setNewName('')
           setNewNumber('')
-          console.log(`Updated person ${updatedExistingPerson.name} with new number: ${updatedExistingPerson.number}`)
+          setMessage(`Updated person ${updatedExistingPerson.name} with new number: ${updatedExistingPerson.number}`)
+          setTimeout(() => {setMessage(null)}, 5000)
+        })
+        .catch(error => {
+          setPersons([...persons.filter(p => p.name !== existingPerson.name)])
+          setMessage(`Information of ${existingPerson.name} has already been removed from server.`)
+          setTimeout(() => {setMessage(null)}, 5000)
         })
     }
     else {
@@ -78,7 +107,8 @@ const App = () => {
           setPersons(persons.concat(newPerson))
           setNewName('')
           setNewNumber('')
-          console.log(`Added person ${newPerson.name} with number: ${newPerson.number}`)
+          setMessage(`Added person ${newPerson.name} with number: ${newPerson.number}`)
+          setTimeout(() => {setMessage(null)}, 5000)
         })
     }
   }
@@ -93,7 +123,8 @@ const App = () => {
           console.log(`Deleted person with ID ${id} from database.`)
         })
     } else {
-      console.log(`User cancelled deletion.`)
+      setMessage(`User cancelled deletion.`)
+      setTimeout(() => {setMessage(null)}, 5000)
     }
   }
 
@@ -104,6 +135,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message}/>
       <Filter eventHandler={handleFilterChange} />
       <h3>add a new</h3>
       <PersonForm formEventHandler={addPerson}
