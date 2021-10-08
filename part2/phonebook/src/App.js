@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personsService from './services/persons'
 
 
 const Filter = ({eventHandler}) => (
@@ -8,13 +8,13 @@ const Filter = ({eventHandler}) => (
   </div>
 )
 
-const PersonForm = ({formEventHandler, nameEventHandler, numberEventHandler}) => (
+const PersonForm = ({formEventHandler, nameEventHandler, numberEventHandler, nameValue, numberValue}) => (
   <form onSubmit={formEventHandler}>
     <div>
-      name: <input onChange={nameEventHandler} />
+      name: <input value={nameValue} onChange={nameEventHandler} />
     </div>
     <div>
-      number: <input onChange={numberEventHandler} />
+      number: <input value={numberValue} onChange={numberEventHandler} />
     </div>
     <div>
       <button type="submit">add</button>
@@ -22,12 +22,13 @@ const PersonForm = ({formEventHandler, nameEventHandler, numberEventHandler}) =>
   </form>
 )
 
-const Person = ({persons}) => {
+const Person = ({persons, deletePersonHandler}) => {
   return (
     <>
     {persons.map(p => 
               <div key={p.name}>
                 {p.name} {p.number}
+                <button onClick={() => deletePersonHandler(p.id)}>delete</button>
               </div>
             )
     }
@@ -42,10 +43,10 @@ const App = () => {
   const [ newNameFilter, setNewNameFilter ] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
+    personsService
+      .getAll()
       .then(
-        response => setPersons(response.data)
+        persons => setPersons(persons)
       )
   }, [])
 
@@ -56,9 +57,23 @@ const App = () => {
     }
     else {
       const newPerson = {name: newName, number: newNumber}
-      setPersons(persons.concat(newPerson))
-      console.log(`Added person ${newPerson.name} with number: ${newPerson.number}`)
+      personsService
+        .create(newPerson)
+        .then(returnedPerson => {
+          setPersons(persons.concat(newPerson))
+          setNewName('')
+          setNewNumber('')
+          console.log(`Added person ${newPerson.name} with number: ${newPerson.number}`)
+        })
     }
+  }
+
+  const deletePerson = (id) => {
+    personsService
+      .remove(id)
+      .then(() => {
+        console.log(`Deleted person with ID ${id} from database.`)
+      })
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
@@ -73,9 +88,16 @@ const App = () => {
       <PersonForm formEventHandler={addPerson}
                   nameEventHandler={handleNameChange}
                   numberEventHandler={handleNumberChange}
+                  nameValue={newName}
+                  numberValue={newNumber}
       />
       <h3>Numbers</h3>
-      <Person persons={persons.filter(p => p.name.toLowerCase().includes(newNameFilter.toLowerCase()))} />
+      <Person persons={persons.filter(
+                        p => p.name.toLowerCase().includes(newNameFilter.toLowerCase()))
+                      }
+              deletePersonHandler={deletePerson}
+      />
+
     </div>
   )
 }
