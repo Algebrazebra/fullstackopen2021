@@ -37,7 +37,7 @@ const Person = ({persons, deletePersonHandler}) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([])
+  const [ persons, setPersons ] = useState([])
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ newNameFilter, setNewNameFilter ] = useState('')
@@ -52,11 +52,26 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (persons.map(p => p.name).includes(newName)) {
-      window.alert(`${newName} already exists in phonebook.`)
+    if (
+      persons.map(p => p.name).includes(newName)
+      && window.confirm(`${newName} already exists in phonebook. Replace the existing phone number?`)
+    ) {
+      
+      const existingPerson = persons.filter(p => p.name === newName)[0]
+      const updatedExistingPerson = {...existingPerson, number: newNumber}
+      personsService
+        .update(existingPerson.id, updatedExistingPerson)
+        .then(returnedPerson => {
+          const updatedPersons = persons.filter(p => p.id !== returnedPerson.id).concat(returnedPerson)
+          setPersons(updatedPersons)
+          setNewName('')
+          setNewNumber('')
+          console.log(`Updated person ${updatedExistingPerson.name} with new number: ${updatedExistingPerson.number}`)
+        })
     }
     else {
-      const newPerson = {name: newName, number: newNumber}
+      const newId = Math.max(...persons.map(p => p.id)) + 1
+      const newPerson = {name: newName, number: newNumber, id: newId}
       personsService
         .create(newPerson)
         .then(returnedPerson => {
@@ -69,11 +84,17 @@ const App = () => {
   }
 
   const deletePerson = (id) => {
-    personsService
-      .remove(id)
-      .then(() => {
-        console.log(`Deleted person with ID ${id} from database.`)
-      })
+    if (window.confirm("Are you sure?")) {
+      personsService
+        .remove(id)
+        .then((responseData) => {
+          const updatedPersons = [...persons].filter(x => x.id !== id)
+          setPersons(updatedPersons)
+          console.log(`Deleted person with ID ${id} from database.`)
+        })
+    } else {
+      console.log(`User cancelled deletion.`)
+    }
   }
 
   const handleNameChange = (event) => setNewName(event.target.value)
