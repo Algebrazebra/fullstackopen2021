@@ -31,6 +31,16 @@ app.get('/api/persons', (request, response) => {
     response.json(persons)
 })
 
+app.get('/info', (request, response) => {
+    const info = {
+        "people": persons.length,
+        "date": Date.now()
+    }
+    const htmlString = `<div>Phonebook has info for ${persons.ength}</div><div>${new Date().toLocaleString()}</div>`
+    response.set('Content-Type', 'text/html')
+    response.send(Buffer.from(htmlString))
+})
+
 
 const PORT = 3001
 app.listen(PORT, () => {
