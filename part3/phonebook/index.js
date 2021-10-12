@@ -1,8 +1,9 @@
 const express = require('express')
-const logger = require('morgan')
+var logger = require('morgan')
 
 const app = express()
-app.use(logger('tiny'))
+logger.token('body', (req, res) => { return JSON.stringify(req.body) } )
+app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(express.json())
 
 let persons = [
