@@ -4,6 +4,7 @@ var logger = require('morgan')
 const app = express()
 logger.token('body', (req, res) => { return JSON.stringify(req.body) } )
 app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'))
+app.use(express.static('build'))
 app.use(express.json())
 
 let persons = [
