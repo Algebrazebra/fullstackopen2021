@@ -16,3 +16,6 @@ npm run deploy
 
 For more build & deploy options, check the scripts defined in `package.json`.
 
+
+Exercise 3.10 asks to add a link to the deployed application. It is likely that by the time you read this, the link won't work anymore: https://young-refuge-60245.herokuapp.com/
+
