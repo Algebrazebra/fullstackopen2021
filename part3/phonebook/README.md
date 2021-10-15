@@ -1,6 +1,6 @@
 # Phonebook App
 
-This part implements a fullstack phonebook app with a Node.js backend and a react.js frontend. The app is deployed to heroku.
+This part implements a fullstack phonebook app with a Node.js backend and a react.js frontend. The app is deployed to Heroku.
 
 Before deploying, you first need to create the app on Heroku:
 ```bash
