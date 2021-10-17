@@ -10,12 +10,14 @@
     "build:ui": "rm -rf build && cd ../../part2/phonebook && npm run build --prod && cp -r build ../../part3/phonebook",
     "deploy": "cd ../.. && git subtree push --prefix part3/phonebook heroku master",
     "deploy:full": "npm run build:ui && git add ./build/* && git commit -m uibuild && git push && npm run deploy",
-    "logs:prod": "heroku logs --tail"
+    "logs:prod": "heroku logs --tail",
+    "lint": "eslint ."
   },
   "proxy": "http://localhost:3001",
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "eslint": "^8.0.1",
     "nodemon": "^2.0.13"
   },
   "dependencies": {

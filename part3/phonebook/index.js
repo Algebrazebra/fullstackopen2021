@@ -6,7 +6,7 @@ const app = express()
 app.use(express.static('build'))
 app.use(express.json())
 
-logger.token('body', (req, res) => { return JSON.stringify(req.body) } )
+logger.token('body', (request) => { return JSON.stringify(request.body) } )
 app.use(logger(':method :url :status :res[content-length] - :response-time ms :body'))
 
 
@@ -60,12 +60,12 @@ app.post('/api/persons/', (request, response, next) => {
   const body = request.body
   if (!body.name || !body.number) {
     return response.status(400).json({
-        error: 'content missing'
+      error: 'content missing'
     })
   }
   const person = new Person({
-      name: body.name,
-      number: body.number
+    name: body.name,
+    number: body.number
   })
   person
     .save()
@@ -74,7 +74,7 @@ app.post('/api/persons/', (request, response, next) => {
     .catch(error => next(error))
 })
 
-app.get('/info', (request, response, next) => {
+app.get('/info', (request, response) => {
   Person.countDocuments({}, (error, count) => {
     const htmlString = `<div>Phonebook has info for ${count} persons.</div><div>${new Date().toLocaleString()}</div>`
     response.set('Content-Type', 'text/html')
@@ -94,7 +94,7 @@ const errorHandler = (error, request, response, next) => {
 }
 app.use(errorHandler) // must be last loaded middleware
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`)
+  console.log(`Server running on ${PORT}`)
 })
