@@ -7,9 +7,10 @@ Before deploying, you first need to create the app on Heroku:
 heroku login
 heroku create
 ```
-
 This will create an app with a random name.
-To deploy, simply run:
+
+Before deploying, make sure that the `MONGODB_URI` environment variable is set on Heroku with `heroku config:set MONGODB_URI='<DB URI>'`.
+Then, to deploy, simply run:
 ```bash
 npm run deploy
 ```
