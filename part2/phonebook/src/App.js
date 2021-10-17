@@ -85,7 +85,7 @@ const App = () => {
       personsService
         .update(existingPerson.id, updatedExistingPerson)
         .then(returnedPerson => {
-          const updatedPersons = persons.filter(p => p.id !== returnedPerson.id).concat(returnedPerson)
+          const updatedPersons = persons.map(p => p.id !== returnedPerson.id ? p : returnedPerson)
           setPersons(updatedPersons)
           setNewName('')
           setNewNumber('')
