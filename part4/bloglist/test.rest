@@ -2,9 +2,9 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-    "title": "First test",
-    "author": "Mario",
-    "url": "www.google.com",
+    "title": "Second test",
+    "author": "Maria",
+    "url": "www.bing.com",
     "likes": 1
 }
 
