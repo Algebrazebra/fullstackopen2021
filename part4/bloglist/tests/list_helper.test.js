@@ -5,11 +5,6 @@ const emptyBlogList = []
 const listWithOneBlog = [testBlogs[0]]
 const listWithManyBlogs = testBlogs
 
-test('dummy returns one', () => {
-  const result = listHelper.dummy(emptyBlogList)
-  expect(result).toBe(1)
-})
-
 describe('total likes', () => {
   test('when list has many blogs, correctly sums likes', () => {
     const result = listHelper.totalLikes(listWithManyBlogs)

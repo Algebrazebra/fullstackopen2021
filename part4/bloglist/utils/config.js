@@ -1,9 +1,10 @@
 require('dotenv').config()
 
+const MONGODB_URI = process.env.NODE_ENV === 'test'
+  ? process.env.TEST_MONGODB_URI
+  : process.env.MONGODB_URI
+
 const PORT = process.env.PORT
-const DB_USER = process.env.DB_USER
-const DB_PASS = process.env.DB_PASS
-const MONGODB_URI = `mongodb+srv://${DB_USER}:${DB_PASS}@cluster0.smkmm.mongodb.net/bloglist-db?retryWrites=true&w=majority`
 
 module.exports = {
   MONGODB_URI,
