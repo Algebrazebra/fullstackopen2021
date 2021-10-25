@@ -15,17 +15,83 @@ beforeEach(async () => {
   }
 })
 
-test('notes are returned as json', async () => {
-  await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+describe('blog api', () => {
+
+  test('blogs are returned as json', async () => {
+    await api
+      .get('/api/blogs')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('correct amount of blog posts are returned', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(testBlogs.length)
+  })
+
+  test('unique identifier exists', async () => {
+    const response = await api.get('/api/blogs')
+    response.body.forEach(b => expect(b._id).toBeDefined())
+  })
+
+  test('new blog post creation is successful', async () => {
+    const blogsCountBefore = await Blog.countDocuments({})
+
+    const newBlog = new Blog({
+      title: 'Successful Blog Creation Test',
+      author: 'Jest Test Runner',
+      url: 'www.google.at',
+      likes: 0,
+    })
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsCountAfter = await Blog.countDocuments({})
+    expect(blogsCountAfter).toBe(blogsCountBefore + 1)
+  })
+
+  test('blog post likes default to zero', async () => {
+    const newBlog = new Blog({
+      title: 'Default likes are zero',
+      author: 'Jest Test Runner',
+      url: 'www.google.at'
+    })
+    const response = await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body.likes).toBe(0)
+  })
+
+  test('missing title property returns 400', async () => {
+    const newBlog = new Blog({
+      author: 'Jest Test Runner',
+      url: 'Missing title property'
+    })
+    api
+      .post('/api/blogs/')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
+
+  test('missing url property returns 400', async () => {
+    const newBlog = new Blog({
+      title: 'Missing url property',
+      author: 'Jest Test Runner',
+    })
+    api
+      .post('/api/blogs/')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+  })
 })
 
-test('correct amount of blog posts are returned', async () => {
-  const response = await api.get('/api/blogs')
-  expect(response.body).toHaveLength(testBlogs.length)
-})
 
 afterAll(() => {
   mongoose.connection.close()
