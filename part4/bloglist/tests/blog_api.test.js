@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const supertest =  require('supertest')
+const supertest = require('supertest')
 const testBlogs = require('./test_blog_list')
 const Blog = require('../models/blog')
 const app = require('../app')
@@ -37,12 +37,12 @@ describe('blog api', () => {
   test('new blog post creation is successful', async () => {
     const blogsCountBefore = await Blog.countDocuments({})
 
-    const newBlog = new Blog({
+    const newBlog = {
       title: 'Successful Blog Creation Test',
       author: 'Jest Test Runner',
       url: 'www.google.at',
       likes: 0,
-    })
+    }
     await api
       .post('/api/blogs')
       .send(newBlog)
@@ -54,44 +54,38 @@ describe('blog api', () => {
   })
 
   test('blog post likes default to zero', async () => {
-    const newBlog = new Blog({
+    const newBlog = {
       title: 'Default likes are zero',
       author: 'Jest Test Runner',
       url: 'www.google.at'
-    })
+    }
     const response = await api
-      .post('/api/blogs')
+      .post('/api/blogs/')
       .send(newBlog)
       .expect(200)
       .expect('Content-Type', /application\/json/)
     expect(response.body.likes).toBe(0)
   })
 
-  test('missing title property returns 400', async () => {
-    const newBlog = new Blog({
-      author: 'Jest Test Runner',
-      url: 'Missing title property'
-    })
-    api
+  test('missing title and url property returns 400', async () => {
+    const newBlog = {
+      author: 'Missing title and url',
+    }
+    await api
       .post('/api/blogs/')
       .send(newBlog)
       .expect(400)
-      .expect('Content-Type', /application\/json/)
   })
 
-  test('missing url property returns 400', async () => {
-    const newBlog = new Blog({
-      title: 'Missing url property',
-      author: 'Jest Test Runner',
-    })
-    api
-      .post('/api/blogs/')
-      .send(newBlog)
-      .expect(400)
-      .expect('Content-Type', /application\/json/)
+  test('deleting post works', async () => {
+    const blogsCountBefore = await Blog.countDocuments({})
+    await api
+      .delete('/api/blogs/5a422a851b54a676234d17f7')
+      .expect(204)
+    const blogsCountAfter = await Blog.countDocuments({})
+    expect(blogsCountAfter).toEqual(blogsCountBefore - 1)
   })
 })
-
 
 afterAll(() => {
   mongoose.connection.close()
