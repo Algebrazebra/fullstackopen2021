@@ -17,5 +17,4 @@ The course covers the following topics:
 11. CI/CD
 12. Containers
 
-The exercise submissions are organized according to topics listed above. Note that some submissions are contained in a separate repository.
-For example, part 3 required a Heroku deployment which is easier to manage in a separate repository.
+The exercise submissions are organized according to topics listed above.
