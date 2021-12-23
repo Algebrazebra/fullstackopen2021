@@ -22,7 +22,7 @@ const mostBlogs = (blogs) => {
           ? a
           : b
       , {})
-    return {'author': mostBlogsAuthor, 'blogs': blogsByAuthor[mostBlogsAuthor]}
+    return { 'author': mostBlogsAuthor, 'blogs': blogsByAuthor[mostBlogsAuthor] }
   }
 }
 
