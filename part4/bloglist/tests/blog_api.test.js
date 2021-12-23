@@ -85,6 +85,17 @@ describe('blog api', () => {
     const blogsCountAfter = await Blog.countDocuments({})
     expect(blogsCountAfter).toEqual(blogsCountBefore - 1)
   })
+
+  test('updating post works', async () => {
+    const updatedBlog = { ...testBlogs[0], title: 'Updated title' }
+    await api
+      .put(`/api/blogs/${updatedBlog._id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const updatedBlogInDB = await Blog.findById(updatedBlog._id)
+    expect(updatedBlogInDB.title).toBe('Updated title')
+  })
 })
 
 afterAll(() => {
