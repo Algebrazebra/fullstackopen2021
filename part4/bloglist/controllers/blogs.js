@@ -1,8 +1,6 @@
 require('express-async-errors')
-const jwt = require('jsonwebtoken')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
-const User = require('../models/user')
 
 
 blogsRouter.get('/', async (request, response) => {
@@ -11,20 +9,16 @@ blogsRouter.get('/', async (request, response) => {
 })
 
 blogsRouter.post('/', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  const user = await User.findById(decodedToken.id)
-  const blog = new Blog({ ...request.body, user: user._id })
+  const blog = new Blog({ ...request.body, user: request.user._id })
   const savedBlog = await blog.save()
-  user.blogs = user.blogs.concat(savedBlog._id)
-  await user.save()
+  request.user.blogs = request.user.blogs.concat(savedBlog._id)
+  await request.user.save()
   response.json(savedBlog)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET)
-  const user = await User.findById(decodedToken.id)
   const blogToBeDeleted = await Blog.findById(request.params.id)
-  if (user.id.toString() === blogToBeDeleted.user.toString()) {
+  if (request.user.id.toString() === blogToBeDeleted.user.toString()) {
     await blogToBeDeleted.remove()
     response.status(204).end()
   } else {
