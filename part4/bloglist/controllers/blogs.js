@@ -1,6 +1,7 @@
 require('express-async-errors')
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const { userExtractor } = require('../utils/middleware')
 
 
 blogsRouter.get('/', async (request, response) => {
@@ -8,7 +9,7 @@ blogsRouter.get('/', async (request, response) => {
   response.json(blogs.map(blog => blog.toJSON()))
 })
 
-blogsRouter.post('/', async (request, response) => {
+blogsRouter.post('/', userExtractor, async (request, response) => {
   const blog = new Blog({ ...request.body, user: request.user._id })
   const savedBlog = await blog.save()
   request.user.blogs = request.user.blogs.concat(savedBlog._id)
@@ -16,7 +17,7 @@ blogsRouter.post('/', async (request, response) => {
   response.json(savedBlog)
 })
 
-blogsRouter.delete('/:id', async (request, response) => {
+blogsRouter.delete('/:id', userExtractor, async (request, response) => {
   const blogToBeDeleted = await Blog.findById(request.params.id)
   if (request.user.id.toString() === blogToBeDeleted.user.toString()) {
     await blogToBeDeleted.remove()
