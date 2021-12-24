@@ -1,7 +1,10 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const bcrypt = require('bcrypt')
 const testBlogs = require('./test_blog_list')
+const testUsers = require('./test_user_list')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const app = require('../app')
 
 const api = supertest(app)
@@ -12,6 +15,13 @@ beforeEach(async () => {
   for (const b of testBlogs) {
     const blogObject = new Blog(b)
     await blogObject.save()
+  }
+
+  await User.deleteMany({})
+  for (const u of testUsers) {
+    const passwordHash = await bcrypt.hash('sekret', 10)
+    const userObject = new User({ ...u, passwordHash: passwordHash })
+    await userObject.save()
   }
 })
 
@@ -31,7 +41,7 @@ describe('blog api', () => {
 
   test('unique identifier exists', async () => {
     const response = await api.get('/api/blogs')
-    response.body.forEach(b => expect(b._id).toBeDefined())
+    response.body.forEach(b => expect(b.id).toBeDefined())
   })
 
   test('new blog post creation is successful', async () => {
