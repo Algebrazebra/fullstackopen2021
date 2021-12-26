@@ -11,6 +11,7 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
+  const [notification, setNotification] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -40,27 +41,41 @@ const App = () => {
       setUser(null)
       setUsername('')
       setPassword('')
-      console.log('Invalid username and/or password.')
+      setNotification(`invalid username and/or password`)
+      setTimeout(() => {
+        setNotification(null)
+      }, 5000)
     }
   }
 
   const handleLogout = async (event) => {
+    event.preventDefault()
     setUser(null)
     window.localStorage.clear()
   }
 
-  const handleBlogCreation = async () => {
+  const handleBlogCreation = async (event) => {
+    event.preventDefault()
     const newBlog = await blogService.create({
       'title': blogTitle,
       'author': blogAuthor,
       'url': blogUrl
     })
-    console.log(newBlog)
+    setBlogs(blogs.concat(newBlog))
+    setBlogTitle('')
+    setBlogAuthor('')
+    setBlogUrl('')
+    setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
   }
 
   const loginForm = () => (
     <form onSubmit={handleLogin}>
-     <div>
+      <h2>login to application</h2>
+      <Notification message={notification} />
+      <div>
        username
         <input
           type="text"
@@ -85,6 +100,7 @@ const App = () => {
   const blogList = () => (
     <div>
       <h2>blogs</h2>
+      <Notification message={notification} />
       <p>
         {user.name} logged in
         <button type="button" onClick={handleLogout}>logout</button>
@@ -118,7 +134,7 @@ const App = () => {
             onChange={({ target }) => setBlogUrl(target.value)}
           />
         </div>
-      <button type="submit">create</button>
+        <button type="submit">create</button>
       </form>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
@@ -126,10 +142,18 @@ const App = () => {
     </div>
   )
 
+  const Notification = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+    return (
+      <div className="error">{message}</div>
+    )
+  }
+
   return (
     <div>
-    {user === null && loginForm()}
-    {user !== null && blogList()}
+      {user === null ? loginForm() : blogList()}
     </div>
   )
 }
