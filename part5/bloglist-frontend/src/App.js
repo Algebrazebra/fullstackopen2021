@@ -58,8 +58,6 @@ const App = () => {
     window.localStorage.clear()
   }
 
-
-  
   const BlogList = () => (
     <div>
       <h2>blogs</h2>
