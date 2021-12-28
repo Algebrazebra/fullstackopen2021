@@ -63,6 +63,11 @@ const App = () => {
     setBlogs(updatedBlogs)
   }
 
+  const removeFromBlogs = (blogId)  => {
+    const updatedBlogs = blogs.filter(b => b.id !== blogId)
+    setBlogs(updatedBlogs)
+  }
+
   const BlogList = () => (
     <div>
       <h2>blogs</h2>
@@ -86,7 +91,13 @@ const App = () => {
       {blogs
         .sort((b1, b2) => b2.likes - b1.likes)
         .map(blog =>
-          <Blog key={blog.id} blog={blog} updateBlogs={updateBlogsState} />
+          <Blog
+            key={blog.id}
+            blog={blog}
+            updateBlogs={updateBlogsState}
+            removeFromBlogs={removeFromBlogs}
+            currentUserId={user.id}
+          />
       )}
     </div>
   )

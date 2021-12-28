@@ -1,13 +1,24 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, updateBlogs }) => {
+
+const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
 
   const [isDetailShown, setIsDetailShown] = useState(false)
+
+  const isAuthor = (blog, currentUserId) => {
+    try {
+      return blog.user.id === currentUserId
+    } catch {
+      return false
+    }
+  }
 
   const toggleDetails = () => {
     setIsDetailShown(!isDetailShown)
   }
+
+  const viewHideLabel = isDetailShown ? 'hide' : 'view'
 
   const blogStyle = {
     paddingTop: 10,
@@ -26,20 +37,36 @@ const Blog = ({ blog, updateBlogs }) => {
     updateBlogs(response)
   }
 
-  const BlogDetail = () => {
+  const deleteBlog = async (blog) => {
+    window.confirm(`Remove ${blog.title} by ${blog.author}?`)
+    await blogService.remove(blog.id)
+    removeFromBlogs(blog.id)
+  }
+
+  const DeleteButton = (buttonLabel, blog) => {
+    return (
+      <>
+      <br />
+      <button onClick={() => deleteBlog(blog)}>{buttonLabel}</button>
+      </>
+    )
+  }
+
+  const BlogDetail = (blog, isAuthor) => {
     return (
       <div>
         {blog.url}<br />
         likes: {blog.likes} <button onClick={() => increaseLike(blog)}>like</button> <br />
         {typeof(blog.user) !== 'undefined' && blog.user.name}
+        {isAuthor && DeleteButton('delete', blog)}
       </div>
     )
   }
 
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author} <button onClick={toggleDetails}>view</button>
-      {isDetailShown && <BlogDetail />}
+      {blog.title} {blog.author} <button onClick={toggleDetails}>{viewHideLabel}</button>
+      {isDetailShown && BlogDetail(blog, isAuthor(blog, currentUserId))}
     </div>  
   )
 }

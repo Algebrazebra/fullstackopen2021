@@ -1,5 +1,6 @@
 require('express-async-errors')
 const blogsRouter = require('express').Router()
+const blog = require('../models/blog')
 const Blog = require('../models/blog')
 const { userExtractor } = require('../utils/middleware')
 
