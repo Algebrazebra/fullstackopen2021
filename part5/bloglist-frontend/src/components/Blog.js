@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({blog}) => {
+const Blog = ({ blog, updateBlogs }) => {
 
-  const [showDetails, setShowDetails] = useState(false)
+  const [isDetailShown, setIsDetailShown] = useState(false)
 
   const toggleDetails = () => {
-    setShowDetails(!showDetails)
+    setIsDetailShown(!isDetailShown)
   }
 
   const blogStyle = {
@@ -17,24 +17,20 @@ const Blog = ({blog}) => {
     marginBottom: 5
   }
 
-  const handleLike = async (blog) => {
-    var updatedBlog = {
-      id: blog.id,
-      title: blog.title,
-      url: blog.url,
-      likes: blog.likes + 1
-    }
+  const increaseLike = async (blog) => {
+    var updatedBlog = { ...blog, likes: blog.likes + 1 }
     if (typeof(blog.user) !== 'undefined') {
       updatedBlog['user'] = blog.user.id
     }
-    await blogService.update(updatedBlog)
+    const response = await blogService.update(updatedBlog)
+    updateBlogs(response)
   }
 
   const BlogDetail = () => {
     return (
       <div>
         {blog.url}<br />
-        likes: {blog.likes} <button onClick={() => handleLike(blog)}>like</button> <br />
+        likes: {blog.likes} <button onClick={() => increaseLike(blog)}>like</button> <br />
         {typeof(blog.user) !== 'undefined' && blog.user.name}
       </div>
     )
@@ -43,7 +39,7 @@ const Blog = ({blog}) => {
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} <button onClick={toggleDetails}>view</button>
-      {showDetails && <BlogDetail />}
+      {isDetailShown && <BlogDetail />}
     </div>  
   )
 }
