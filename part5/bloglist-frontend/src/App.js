@@ -14,13 +14,13 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const [notification, setNotification] = useState(null)
-  
+
   const createNewBlogRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const App = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
-      const loggedInUser = await loginService.login({'username': username, 'password': password})
+      const loggedInUser = await loginService.login({ 'username': username, 'password': password })
       setUser(loggedInUser)
       blogService.setToken(loggedInUser.token)
       window.localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser))
@@ -45,7 +45,7 @@ const App = () => {
       setUser(null)
       setUsername('')
       setPassword('')
-      setNotification(`invalid username and/or password`)
+      setNotification('invalid username and/or password')
       setTimeout(() => {
         setNotification(null)
       }, 5000)
@@ -98,21 +98,21 @@ const App = () => {
             removeFromBlogs={removeFromBlogs}
             currentUserId={user.id}
           />
-      )}
+        )}
     </div>
   )
 
   return (
     <div>
       {user === null
-        ? <LoginForm 
-            username={username}
-            password={password}
-            handleUsernameChange={e => setUsername(e.target.value)}
-            handlePasswordChange={e => setPassword(e.target.value)}
-            handleLogin={handleLogin}
-            notification={notification}
-          /> 
+        ? <LoginForm
+          username={username}
+          password={password}
+          handleUsernameChange={e => setUsername(e.target.value)}
+          handlePasswordChange={e => setPassword(e.target.value)}
+          handleLogin={handleLogin}
+          notification={notification}
+        />
         : <BlogList />}
     </div>
   )

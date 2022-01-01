@@ -1,13 +1,13 @@
-import React from "react"
-import Notification from "./Notification"
+import React from 'react'
+import Notification from './Notification'
 
 const LoginForm = ({
-    username,
-    password,
-    handleUsernameChange,
-    handlePasswordChange,
-    handleLogin,
-    notification
+  username,
+  password,
+  handleUsernameChange,
+  handlePasswordChange,
+  handleLogin,
+  notification
 }) => (
   <form onSubmit={handleLogin}>
     <h2>login to application</h2>

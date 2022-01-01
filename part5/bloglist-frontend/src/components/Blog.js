@@ -10,7 +10,7 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
   const isAuthor = (blog, currentUserId) => {
     try {
       return blog.user.id === currentUserId
-    } catch {
+    } catch (e) {
       return false
     }
   }
@@ -47,8 +47,8 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
   const DeleteButton = (buttonLabel, blog) => {
     return (
       <>
-      <br />
-      <button onClick={() => deleteBlog(blog)}>{buttonLabel}</button>
+        <br />
+        <button onClick={() => deleteBlog(blog)}>{buttonLabel}</button>
       </>
     )
   }
@@ -68,7 +68,7 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
     <div style={blogStyle}>
       {blog.title} {blog.author} <button onClick={toggleDetails}>{viewHideLabel}</button>
       {isDetailShown && BlogDetail(blog, isAuthor(blog, currentUserId))}
-    </div>  
+    </div>
   )
 }
 
