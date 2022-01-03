@@ -1,11 +1,10 @@
 import React, { useState } from 'react'
-import blogService from '../services/blogs'
 
 const CreateNewBlog = ({ handleBlogCreation }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
-  
+
   return (
     <div>
       <h2>create new</h2>
@@ -40,7 +39,7 @@ const CreateNewBlog = ({ handleBlogCreation }) => {
             onChange={e => setBlogUrl(e.target.value)}
           />
         </div>
-        <button type="submit">create</button>
+        <button id="createNewBlog" type="submit">create</button>
       </form>
     </div>
   )
