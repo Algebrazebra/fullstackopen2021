@@ -68,6 +68,21 @@ const App = () => {
     setBlogs(updatedBlogs)
   }
 
+  const handleBlogCreation = async (event, blogTitle, blogAuthor, blogUrl) => {
+    event.preventDefault()
+    const newBlog = await blogService.create({
+      'title': blogTitle,
+      'author': blogAuthor,
+      'url': blogUrl
+    })
+    createNewBlogRef.current.toggleVisibility()
+    setBlogs(blogs.concat(newBlog))
+    setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`)
+    setTimeout(() => {
+      setNotification(null)
+    }, 5000)
+  }
+
   const BlogList = () => (
     <div>
       <h2>blogs</h2>
@@ -77,16 +92,7 @@ const App = () => {
         handleLogout={handleLogout}
       />
       <Togglable buttonLabel="create new blog" ref={createNewBlogRef}>
-        <CreateNewBlog
-          postActions={newBlog => {
-            createNewBlogRef.current.toggleVisibility()
-            setBlogs(blogs.concat(newBlog))
-            setNotification(`a new blog ${newBlog.title} by ${newBlog.author} added`)
-            setTimeout(() => {
-              setNotification(null)
-            }, 5000)
-          }}
-        />
+        <CreateNewBlog handleBlogCreation={handleBlogCreation} />
       </Togglable>
       {blogs
         .sort((b1, b2) => b2.likes - b1.likes)

@@ -3,7 +3,17 @@ import PropTypes from 'prop-types'
 import blogService from '../services/blogs'
 
 
-const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
+const increaseLike = async (blog, updateBlogs) => {
+  var updatedBlog = { ...blog, likes: blog.likes + 1 }
+  if (typeof(blog.user) !== 'undefined') {
+    updatedBlog['user'] = blog.user.id
+  }
+  const response = await blogService.update(updatedBlog)
+  updateBlogs(response)
+}
+
+
+const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId, likeHandler }) => {
 
   const [isDetailShown, setIsDetailShown] = useState(false)
 
@@ -29,15 +39,6 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
     marginBottom: 5
   }
 
-  const increaseLike = async (blog) => {
-    var updatedBlog = { ...blog, likes: blog.likes + 1 }
-    if (typeof(blog.user) !== 'undefined') {
-      updatedBlog['user'] = blog.user.id
-    }
-    const response = await blogService.update(updatedBlog)
-    updateBlogs(response)
-  }
-
   const deleteBlog = async (blog) => {
     window.confirm(`Remove ${blog.title} by ${blog.author}?`)
     await blogService.remove(blog.id)
@@ -55,9 +56,9 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
 
   const BlogDetail = (blog, isAuthor) => {
     return (
-      <div>
+      <div className='blogDetail'>
         {blog.url}<br />
-        likes: {blog.likes} <button onClick={() => increaseLike(blog)}>like</button> <br />
+        likes: {blog.likes} <button onClick={() => likeHandler(blog, updateBlogs)}>like</button> <br />
         {typeof(blog.user) !== 'undefined' && blog.user.name}
         {isAuthor && DeleteButton('delete', blog)}
       </div>
@@ -65,7 +66,7 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       {blog.title} {blog.author} <button onClick={toggleDetails}>{viewHideLabel}</button>
       {isDetailShown && BlogDetail(blog, isAuthor(blog, currentUserId))}
     </div>
@@ -74,9 +75,15 @@ const Blog = ({ blog, updateBlogs, removeFromBlogs, currentUserId }) => {
 
 Blog.propTypes = {
   blog: PropTypes.object.isRequired,
-  updateBlogs: PropTypes.func.isRequired,
-  removeFromBlogs: PropTypes.func.isRequired,
-  currentUserId: PropTypes.string.isRequired
+  updateBlogs: PropTypes.func,
+  removeFromBlogs: PropTypes.func,
+  currentUserId: PropTypes.string,
+  likeHandler: PropTypes.func
 }
+
+Blog.defaultProps = {
+  likeHandler: increaseLike
+}
+
 
 export default Blog

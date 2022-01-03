@@ -1,28 +1,19 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const CreateNewBlog = ({ postActions }) => {
+const CreateNewBlog = ({ handleBlogCreation }) => {
   const [blogTitle, setBlogTitle] = useState('')
   const [blogUrl, setBlogUrl] = useState('')
   const [blogAuthor, setBlogAuthor] = useState('')
-
-  const handleBlogCreation = async (event) => {
-    event.preventDefault()
-    const newBlog = await blogService.create({
-      'title': blogTitle,
-      'author': blogAuthor,
-      'url': blogUrl
-    })
-    postActions(newBlog)
-  }
-
+  
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={handleBlogCreation}>
+      <form onSubmit={e => handleBlogCreation(e, blogTitle, blogAuthor, blogUrl)}>
         <div>
           title
           <input
+            id='title'
             type="text"
             value={blogTitle}
             name="Title"
@@ -32,6 +23,7 @@ const CreateNewBlog = ({ postActions }) => {
         <div>
         author
           <input
+            id='author'
             type="text"
             value={blogAuthor}
             name="Author"
@@ -39,8 +31,9 @@ const CreateNewBlog = ({ postActions }) => {
           />
         </div>
         <div>
-      url
+          url
           <input
+            id='url'
             type="text"
             value={blogUrl}
             name="URL"
