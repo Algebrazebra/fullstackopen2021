@@ -1,3 +1,5 @@
+import { createStore } from "redux"
+
 const anecdotesAtStart = [
   'If it hurts, do it more often',
   'Adding manpower to a late software project makes it later!',
@@ -20,10 +22,39 @@ const asObject = (anecdote) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action)
+  console.log(state)
+  console.log(action)
+  switch (action.type) {
+    case 'VOTE': {
+      const id = action.data.id
+      const anecdoteToUpdate = state.find(a => a.id === id)
+      const updatedAnecdote = { 
+        ...anecdoteToUpdate, 
+        votes: anecdoteToUpdate.votes + 1
+      }
+      return state.map(anecdote =>
+        anecdote.id !== id ? anecdote : updatedAnecdote 
+      )
+    }
+    case 'CREATE_ANECDOTE':
+      return state.concat(asObject(action.data.content))
+    default:
+      return state
+  }
+}
 
-  return state
+export const voteAnecdote = (id) => {
+  return {
+    type: 'VOTE',
+    data: { id },
+  }
+}
+
+export const createAnecdote = (anecdote) => {
+  return {
+    type: 'CREATE_ANECDOTE',
+    data: { content: anecdote },
+  }
 }
 
 export default reducer
