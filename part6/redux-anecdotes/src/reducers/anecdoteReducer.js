@@ -1,3 +1,5 @@
+import anecdoteService from '../services/anecdoteService'
+
 const anecdoteReducer = (state = [], action) => {
   console.log(state)
   console.log(action)
@@ -30,16 +32,22 @@ export const voteAnecdote = (id) => {
 }
 
 export const createAnecdote = (anecdote) => {
-  return {
-    type: 'CREATE_ANECDOTE',
-    data: { ...anecdote },
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(anecdote)
+    dispatch({
+      type: 'CREATE_ANECDOTE',
+      data: { ...newAnecdote },
+    })
   }
 }
 
 export const initializeAnecdotes = (anecdotes) => {
-  return {
-    type: 'INIT_ANECDOTES',
-    data: anecdotes
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch({
+      type: 'INIT_ANECDOTES',
+      data: anecdotes
+    })
   }
 }
 
