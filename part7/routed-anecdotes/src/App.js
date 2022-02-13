@@ -60,12 +60,9 @@ const Footer = () => (
 )
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState('')
-  const [author, setAuthor] = useState('')
-  const [info, setInfo] = useState('')
-  const contentField = useField('text')
-  const authorField = useField('text')
-  const infoField = useField('text')
+  const [ contentField, resetContent ] = useField('text')
+  const [ authorField, resetAuthor ] = useField('text')
+  const [ infoField, resetInfo ] = useField('text')
   const history = useHistory()
 
 
@@ -77,17 +74,24 @@ const CreateNew = (props) => {
       info: infoField.value,
       votes: 0
     })
-    props.setNotification(`a new anecdote ${content} created!`)
+    props.setNotification(`a new anecdote ${contentField.value} created!`)
     setTimeout( () => {
       props.setNotification('')
     }, 10000)
     history.push('/')
   }
 
+  const handleReset = (e) => {
+    e.preventDefault()
+    resetContent()
+    resetAuthor()
+    resetInfo()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onReset={handleReset}>
         <div>
           content
           <input {...contentField} />
@@ -100,7 +104,8 @@ const CreateNew = (props) => {
           url for more info
           <input {...infoField} />
         </div>
-        <button>create</button>
+        <button type='submit'>create</button>
+        <button type='reset'>reset</button>
       </form>
     </div>
   )
