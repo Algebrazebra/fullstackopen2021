@@ -1,5 +1,5 @@
-import React from 'react'
-import Notification from './Notification'
+import React from "react";
+import Notification from "./Notification";
 
 const LoginForm = ({
   username,
@@ -7,15 +7,15 @@ const LoginForm = ({
   handleUsernameChange,
   handlePasswordChange,
   handleLogin,
-  notification
+  notification,
 }) => (
   <form onSubmit={handleLogin}>
     <h2>login to application</h2>
     <Notification message={notification} />
     <div>
-     username
+      username
       <input
-        id='username'
+        id="username"
         type="text"
         value={username}
         name="Username"
@@ -25,15 +25,17 @@ const LoginForm = ({
     <div>
       password
       <input
-        id='password'
+        id="password"
         type="password"
         value={password}
         name="Password"
         onChange={handlePasswordChange}
       />
     </div>
-    <button id="login-button" type="submit">login</button>
+    <button id="login-button" type="submit">
+      login
+    </button>
   </form>
-)
+);
 
-export default LoginForm
+export default LoginForm;
