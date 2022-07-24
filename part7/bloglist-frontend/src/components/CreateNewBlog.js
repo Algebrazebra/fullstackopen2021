@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
 const CreateNewBlog = ({ handleBlogCreation }) => {
-  const [blogTitle, setBlogTitle] = useState("");
-  const [blogUrl, setBlogUrl] = useState("");
-  const [blogAuthor, setBlogAuthor] = useState("");
+  const [blogTitle, setBlogTitle] = useState("")
+  const [blogUrl, setBlogUrl] = useState("")
+  const [blogAuthor, setBlogAuthor] = useState("")
 
   return (
     <div>
@@ -46,7 +46,7 @@ const CreateNewBlog = ({ handleBlogCreation }) => {
         </button>
       </form>
     </div>
-  );
-};
+  )
+}
 
-export default CreateNewBlog;
+export default CreateNewBlog

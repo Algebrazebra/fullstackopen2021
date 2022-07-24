@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"
 
 const LogoutForm = ({ user, handleLogout }) => {
   return (
@@ -8,7 +8,7 @@ const LogoutForm = ({ user, handleLogout }) => {
         logout
       </button>
     </p>
-  );
-};
+  )
+}
 
-export default LogoutForm;
+export default LogoutForm

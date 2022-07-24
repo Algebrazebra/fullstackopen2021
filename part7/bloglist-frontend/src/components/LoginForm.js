@@ -1,5 +1,5 @@
-import React from "react";
-import Notification from "./Notification";
+import React from "react"
+import Notification from "./Notification"
 
 const LoginForm = ({
   username,
@@ -36,6 +36,6 @@ const LoginForm = ({
       login
     </button>
   </form>
-);
+)
 
-export default LoginForm;
+export default LoginForm
